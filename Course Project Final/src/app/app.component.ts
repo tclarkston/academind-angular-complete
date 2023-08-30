@@ -7,8 +7,4 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   currentPage: string = 'recipes';
-
-  onLinkClicked(page) {
-    this.currentPage = page;
-  }
 }
