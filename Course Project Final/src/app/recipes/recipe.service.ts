@@ -2,18 +2,22 @@ import { ShoppingListService } from './../shopping-list/shopping-list.service';
 import { Injectable } from '@angular/core';
 import { Recipe } from './recipe.model';
 import { Ingredient } from '../shared/ingredient.model';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class RecipeService {
+  recipesChanged = new Subject<Recipe[]>();
 
   private recipes: Recipe[] = [
-    new Recipe(1, 'Beef and Rice', 'Beef and rice recipe for easy dinner'
+    new Recipe('Beef and Rice'
+      , 'Beef and rice recipe for easy dinner'
       , 'https://upload.wikimedia.org/wikipedia/commons/1/11/Fried_ground_beef_and_pickled_garlic_on_sticky_rice%2C_with_Worcestershire_sauce_and_black_pepper_-_Massachusetts.jpg'
       , [
         new Ingredient('Meat', 1),
         new Ingredient('Rice', 4)
       ]),
-    new Recipe(2, 'Hamburger', 'Recipe to make delicious hamburgers.'
+    new Recipe('Hamburger'
+      , 'Recipe to make delicious hamburgers.'
       , 'https://upload.wikimedia.org/wikipedia/commons/f/f8/The_good_vibes_hamburger_05.jpg'
       , [
         new Ingredient('Meat', 1),
@@ -27,12 +31,8 @@ export class RecipeService {
 
   constructor(private shoppingListService: ShoppingListService) { }
 
-  getRecipe(id: number) {
-    const recipe = this.recipes.find(
-      (s) => {
-        return s.id === id;
-      }
-    );
+  getRecipe(idx: number) {
+    const recipe = this.recipes[idx];
     return recipe;
   }
 
@@ -42,5 +42,20 @@ export class RecipeService {
 
   addIngredientToShoppingList(ingredients: Ingredient[]) {
     this.shoppingListService.addIngredients(ingredients);
+  }
+
+  addRecipe(recipe: Recipe){
+    this.recipes.push(recipe);
+    this.recipesChanged.next(this.recipes.slice())
+  }
+
+  upodateRecipe(idx: number, newRecipe: Recipe){
+    this.recipes[idx] = newRecipe;
+    this.recipesChanged.next(this.recipes.slice())
+  }
+
+  deleteRecipe(idx: number){
+    this.recipes.splice(idx, 1);
+    this.recipesChanged.next(this.recipes.slice());
   }
 }

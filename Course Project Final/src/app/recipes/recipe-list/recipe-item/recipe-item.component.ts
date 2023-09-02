@@ -9,8 +9,9 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./recipe-item.component.css']
 })
 export class RecipeItemComponent implements OnInit {
-  @Input() recipe: Recipe
-  
+  @Input() recipe: Recipe;
+  @Input() id: number;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute
@@ -18,5 +19,6 @@ export class RecipeItemComponent implements OnInit {
    }
 
   ngOnInit() {
+    console.log('recipe: ', this.recipe)
   }
 }

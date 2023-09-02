@@ -1,7 +1,8 @@
 import { RecipeService } from './../recipe.service';
 import { Component, OnInit } from '@angular/core';
 import { Form, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Recipe } from '../recipe.model';
 
 @Component({
   selector: 'app-recipe-edit',
@@ -19,7 +20,8 @@ export class RecipeEditComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -33,7 +35,25 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit(){
+    // const newRecipe = new Recipe(
+    //   this.recipeForm.value['name'],
+    //   this.recipeForm.value['description'],
+    //   this.recipeForm.value['imagePath'],
+    //   this.recipeForm.value['ingredients']
+    // );
+
     console.log(this.recipeForm);
+    if (this.editMode){
+      this.recipeService.upodateRecipe(this.id, this.recipeForm.value)
+    } else {
+      this.recipeService.addRecipe(this.recipeForm.value);
+    }
+
+    this.router.navigate(['/recipes']);
+  }
+
+  onCancel() {
+    this.router.navigate(['/recipes', this.id]);
   }
 
   onAddIngredient(){
@@ -45,6 +65,11 @@ export class RecipeEditComponent implements OnInit {
     );
   }
 
+  onDeleteIngredient(idx: number){
+    (<FormArray>this.recipeForm.get('ingredients')).removeAt(idx);
+    // this.recipeService.deleteRecipe(idx);
+  }
+
   private initForm(){
     let recipeName = '';
     let recipeImagePath = '';
@@ -52,7 +77,7 @@ export class RecipeEditComponent implements OnInit {
     let recipeIngredients = new FormArray([]);
 
     if (this.editMode){
-      const recipe = this.recipeService.getRecipe(this.id); 
+      const recipe = this.recipeService.getRecipe(this.id);
       recipeName = recipe.name;
       recipeImagePath = recipe.imagePath;
       recipeDescription = recipe.description;
