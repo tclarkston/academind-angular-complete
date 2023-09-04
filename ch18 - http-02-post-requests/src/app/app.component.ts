@@ -1,35 +1,45 @@
+import { PostsService } from './posts.service';
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Post } from './post.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  loadedPosts = [];
+  loadedPosts: Post[] = [];
+  isFetching = false;
+  error = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private postService: PostsService) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fetchPosts();
+  }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
-    this.http
-      .post(
-        'https://ng-complete-guide-c56d3.firebaseio.com/posts.json',
-        postData
-      )
-      .subscribe(responseData => {
-        console.log(responseData);
-      });
+    this.postService.createPost(postData);
   }
 
   onFetchPosts() {
-    // Send Http request
+    this.fetchPosts();
   }
 
   onClearPosts() {
-    // Send Http request
+    this.postService.deleteAllPosts().subscribe(() => {
+      this.loadedPosts = [];
+    });
+  }
+
+  private fetchPosts() {
+    this.isFetching = true;
+    this.postService.getPosts().subscribe((posts: Post[]) => {
+      this.loadedPosts = posts;
+      this.isFetching = false;
+    }, (error) => {
+      this.error = error.message;
+    });
   }
 }
