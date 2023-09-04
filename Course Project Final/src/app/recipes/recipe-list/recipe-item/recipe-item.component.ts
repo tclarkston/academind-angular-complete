@@ -19,6 +19,5 @@ export class RecipeItemComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log('recipe: ', this.recipe)
   }
 }
