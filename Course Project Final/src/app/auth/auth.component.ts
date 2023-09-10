@@ -1,8 +1,10 @@
 import { AuthResponse, AuthService } from './auth.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs-compat';
+import { Observable, Subscription } from 'rxjs-compat';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder.directive';
 
 @Component({
   selector: 'app-auth',
@@ -13,8 +15,16 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
+  private closeSub: Subscription;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  @ViewChild(PlaceholderDirective, { static: false }) alertHost: PlaceholderDirective;
+
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+    )
+    { }
 
   ngOnInit(): void {
   }
@@ -40,19 +50,38 @@ export class AuthComponent implements OnInit, OnDestroy {
     }
 
     authObs.subscribe(response => {
-      console.log(response);
       this.isLoading = false;
       this.router.navigate(['/recipes']);
     },
       errorMessage => {
-        console.log(errorMessage);
         this.error = errorMessage;
+        this.showError(errorMessage);
         this.isLoading = false;
       });
 
     form.reset();
   }
 
-  ngOnDestroy(): void {
+  onHandleError(){
+    this.error = null;
   }
+
+  ngOnDestroy(): void {
+    if (this.closeSub){
+      this.closeSub.unsubscribe();
+    }
+  }
+
+  private showError(message: string){
+    const alertCompFactory = this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const viewContRef = this.alertHost.ViewContainerRef;
+    viewContRef.clear();
+    
+    const compRef = viewContRef.createComponent(alertCompFactory);
+    compRef.instance.message = message;    
+    this.closeSub = compRef.instance.close.subscribe(() => {
+      this.closeSub.unsubscribe();
+      viewContRef.clear();
+    });
+  };
 }
