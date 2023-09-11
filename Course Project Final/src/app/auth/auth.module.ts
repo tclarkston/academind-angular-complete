@@ -17,8 +17,5 @@ import { SharedModule } from '../shared/shared.module';
     AuthRoutingModule,
     SharedModule
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
-  ]
 })
 export class AuthModule { }
