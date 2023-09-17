@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { CounterOutputComponent } from './counter-output/counter-output.component';
 import { CounterControlsComponent } from './counter-controls/counter-controls.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
