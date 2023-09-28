@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 // })
 export class LoggingService {
 
-  lastLog: string;
+  lastLog: string = "";
 
   constructor() { }
 
