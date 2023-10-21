@@ -13,11 +13,6 @@ export class ShoppingListService {
   ];
   constructor() { }
 
-  addIngredient(ingredient: Ingredient) {
-    this.ingredients.push(ingredient)
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
-
   getIngredients(){
     return this.ingredients.slice();
   }
@@ -26,18 +21,23 @@ export class ShoppingListService {
     return this.ingredients[idx];
   }
 
-  addIngredients(ingredients: Ingredient[]) {
-    this.ingredients.push(...ingredients)
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
+  // addIngredient(ingredient: Ingredient) {
+  //   this.ingredients.push(ingredient)
+  //   this.ingredientsChanged.next(this.ingredients.slice());
+  // }
 
-  updateIngredient(idx: number, newIngredient: Ingredient) {
-    this.ingredients[idx] = newIngredient;
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
+  // addIngredients(ingredients: Ingredient[]) {
+  //   this.ingredients.push(...ingredients)
+  //   this.ingredientsChanged.next(this.ingredients.slice());
+  // }
 
-  deleteIngredient(idx: number){
-    this.ingredients.splice(idx, 1);
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
+  // updateIngredient(idx: number, newIngredient: Ingredient) {
+  //   this.ingredients[idx] = newIngredient;
+  //   this.ingredientsChanged.next(this.ingredients.slice());
+  // }
+
+  // deleteIngredient(idx: number){
+  //   this.ingredients.splice(idx, 1);
+  //   this.ingredientsChanged.next(this.ingredients.slice());
+  // }
 }

@@ -30,7 +30,7 @@ export class DataStorageService {
     return this.http.get<Recipe[]>(
       url
     ).pipe(
-      map(recipes => {
+        map(recipes => {
           return recipes.map(recipe => {
             return {
               ...recipe,
